@@ -1,7 +1,7 @@
 (in-package :cl-user)
 (defpackage #:emoji-thief
   (:nicknames :thief)
-  (:use #:cl)
+  (:use :cl :with-user-abort)
   (:import-from :cl-json
 		:decode-json-from-string)
   (:import-from :cl-cwd

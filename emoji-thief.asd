@@ -6,7 +6,7 @@
   :license  "NPLv1+"
   :version "1.0"
   :serial t
-  :depends-on (#:dexador #:cl-cwd #:str #:cl-json #:unix-opts)
+  :depends-on (#:dexador #:cl-cwd #:str #:cl-json #:unix-opts #:with-user-abort)
   :components ((:file "package")
                (:file "emoji-thief"))
   :build-operation "program-op"

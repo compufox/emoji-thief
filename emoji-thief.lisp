@@ -37,7 +37,7 @@
        (exit 1)))))
 
 (defun download-emoji (name uri)
-  (when (and (fetch uri (pathname (concatenate 'string name ".png")) :if-exists nil)
+  (when (and (fetch uri (concatenate 'string name ".png") :if-exists nil)
 	     *verbose*)
     (format t "downloading ~a~%" name)))
 
@@ -60,26 +60,21 @@
 	(mapcar (lambda (e) (format t "failed to download ~a~%" (agetf e :shortcode)))
 		*failed*)
 	(unless (zerop (length *failed*))
-	  (print "")
-	  (print "rerun to download missing emojis"))))))
+	  (format t "~%run again to download failed emojis~%"))))))
 
 (defun steal ()
-  (handler-case (multiple-value-bind (opts args) (get-opts)
-		  (when (or (getf opts :help nil)
-			    (every #'null (list opts args)))
-		    (describe
-		     :prefix "download all emojis from a mastodon or pleroma server"
-		     :usage-of "steal"
-		     :args "DOMAIN-NAME")
-		    (exit 0))
-		  (setf *verbose* (getf opts :verbose nil))
-		  (setf *retry* (getf opts :retry nil))
-		  (setf *out-dir* (getf opts :out nil))
-		  (mapcar #'get-all-emojis args))
-    (#+sbcl sb-sys:interactive-interrupt
-	#+ccl ccl:interrupt-signal-condition
-	#+clisp system::simple-interrupt-condition
-	#+ecl ext:interactive-interrupt
-	#+allergo excl:interrupt-signal
-	() (progn
-	     (exit 1)))))
+  (multiple-value-bind (opts args) (get-opts)
+    (when (or (getf opts :help nil)
+	      (every #'null (list opts args)))
+      (describe
+       :prefix "download all emojis from a mastodon or pleroma server"
+       :usage-of "steal"
+       :args "DOMAIN-NAME")
+      (exit 0))
+    (setf *verbose* (getf opts :verbose nil))
+    (setf *retry* (getf opts :retry nil))
+    (setf *out-dir* (getf opts :out nil))
+    
+    (handler-case (with-user-abort
+		      (mapcar #'get-all-emojis args))
+      (user-abort () (exit 1)))))
