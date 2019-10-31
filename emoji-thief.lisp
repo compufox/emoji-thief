@@ -27,11 +27,19 @@
    :long "out"
    :meta-var "DIRECTORY"))
 
+(defun agetf (place indicator)
+  "getf but for assoc lists"
+  (cdr (assoc indicator place :test #'equalp)))
+
 (defun get-emoji-list (instance)
   (when (starts-with-p "https://" instance)
     (setf instance (substring 9 (length instance) instance)))
   (decode-json-from-string
-   (handler-case (get (concatenate 'string "https://" instance *api-endpoint*))
+   (handler-case (get (concatenate 'string
+				   (unless (starts-with-p "https://" instance)
+				     "https://")
+				   instance
+				   *api-endpoint*))
      (error ()
        (format t "failed to get emoji list for ~a~%" instance)
        (exit 1)))))
@@ -42,25 +50,25 @@
     (format t "downloading ~a~%" name)))
 
 (defun download-list (list)
-  (setf *failed* '())
-  (dolist (emoji list)
-    (handler-case (download-emoji (agetf emoji :shortcode) (agetf emoji :url))
-      (error ()
-	(push emoji *failed*)))))
+  (labels ((agetf (place indicator) (cdr (assoc indicator place :test #'equalp))))
+    (setf *failed* '())
+    (dolist (emoji list)
+      (handler-case (download-emoji (agetf emoji :shortcode) (agetf emoji :url))
+	(error ()
+	  (push emoji *failed*))))))
 
 (defun get-all-emojis (instance)
-  (labels ((agetf (place indicator) (cdr (assoc indicator place :test #'equalp))))
-    (let ((list (get-emoji-list instance))
-	  (dir (merge-pathnames (or *out-dir* (concatenate 'string instance "/")))))
-      (ensure-directories-exist dir)
-      (with-cwd dir
-	(download-list list)
-	(when *retry*
-	  (download-list *failed*))
-	(mapcar (lambda (e) (format t "failed to download ~a~%" (agetf e :shortcode)))
-		*failed*)
-	(unless (zerop (length *failed*))
-	  (format t "~%run again to download failed emojis~%"))))))
+  (let ((list (get-emoji-list instance))
+	(dir (merge-pathnames (or *out-dir* (concatenate 'string instance "/")))))
+    (ensure-directories-exist dir)
+    (with-cwd dir
+      (download-list list)
+      (when *retry*
+	(download-list *failed*))
+      (mapcar (lambda (e) (format t "failed to download ~a~%" (agetf e :shortcode)))
+	      *failed*)
+      (unless (zerop (length *failed*))
+	(format t "~%run again to download failed emojis~%")))))
 
 (defun steal ()
   (multiple-value-bind (opts args) (get-opts)
