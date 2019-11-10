@@ -25,6 +25,7 @@
    :description "DIRECTORY to put emojis"
    :short #\o
    :long "out"
+   :arg-parser #'(lambda (d) (concatenate 'string (string d) "/"))
    :meta-var "DIRECTORY"))
 
 (defun agetf (place indicator)
@@ -84,7 +85,7 @@
 
     ;; goes into the new folder and starts downloading emojis
     (with-cwd dir
-
+      
       ;; download the initial list
       (download-list list)
 
