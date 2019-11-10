@@ -9,21 +9,30 @@ Download a binary from the releases page
 
 or
 
-clone this repo and also the repo for [cl-cwd](https://github.com/inaimathi/cl-cwd) into your local projects
+clone this repo, [cl-cwd](https://github.com/inaimathi/cl-cwd), and [with-user-abort](https://github.com/theZacAttacks/with-user-abort) into your local projects
 
-run `(asdf:make :emoji-thief)` to build your own
+```
+mkdir ~/common-lisp
+git clone https://github.com/theZacAttacks/with-user-abort
+git clone https://github.com/inaimathi/cl-cwd
+git clone https://github.com/theZacAttacks/emoji-thief
+```
+
+run `(asdf:make :emoji-thief)` (in your lisp implementation) to build your own
 
 ## Usage
 
-`./steal DOMAIN-NAME+`
+```
+./steal --help
+./steal mastodon.social
+./steal -v -o mastodon_emojis mastodon.social
+```
 
-or
+or (from lisp)
 
 `(ql:quickload :emoji-thief)`
 
-`(thief:get-all-emojis "my.cool.server")`
-
-where "my.cool.server" is a mastodon server 
+`(thief:get-all-emojis "mastodon.social")`
 
 ## License
 
