@@ -5,6 +5,7 @@
 (defvar *api-endpoint* "/api/v1/custom_emojis")
 (defvar *verbose* nil)
 (defvar *failed* '())
+(defvar *filter* nil)
 (defvar *retry* nil)
 (defvar *out-dir* nil)
 
@@ -17,6 +18,12 @@
    :description "print progress text"
    :short #\v
    :long "verbose")
+  (:name :filter
+   :description "downloads emoji whose name contains FILTER"
+   :short #\f
+   :long "filter"
+   :arg-parser #'string
+   :meta-var "FILTER")
   (:name :retry
    :description "retry failed downloads"
    :short #\r
@@ -70,7 +77,11 @@
   ;;  we try and download it,
   ;; if it errors we shove the alist inside *failed*
   (dolist (emoji list)
-    (handler-case (download-emoji (agetf emoji :shortcode) (agetf emoji :url))
+    (handler-case
+	(if *filter*
+	    (when (containsp *filter* (agetf emoji :shortcode))
+	      (download-emoji (agetf emoji :shortcode) (agetf emoji :url)))
+	    (download-emoji (agetf emoji :shortcode) (agetf emoji :url)))
       (error ()
 	(push emoji *failed*)))))
 
@@ -121,6 +132,7 @@ parses arguments passed from command line"
     (setf *verbose* (getf opts :verbose nil))
     (setf *retry* (getf opts :retry nil))
     (setf *out-dir* (getf opts :out nil))
+    (setf *filter* (getf opts :filter nil))
 
     ;; starts downloading all emojis,
     ;;  while also trapping ctrl-c (user-abort)

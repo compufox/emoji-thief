@@ -13,7 +13,8 @@
 			  :describe)
   (:import-from :str
 		:starts-with-p
-		:substring)
+		:substring
+		:containsp)
   (:shadowing-import-from :dex
 			  :get
 			  :fetch)
