@@ -18,7 +18,9 @@ git clone https://github.com/inaimathi/cl-cwd
 git clone https://github.com/theZacAttacks/emoji-thief
 ```
 
-run `(asdf:make :emoji-thief)` (in your lisp implementation) to build your own
+run `make` in the `~/common-lisp/emoji-thief` folder.
+
+note: you'll need a lisp implementation installed (or use [roswell](https://github.com/roswell/roswell))
 
 ## Usage
 
