@@ -9,13 +9,12 @@ Download a binary from the releases page
 
 or
 
-clone this repo, [cl-cwd](https://github.com/inaimathi/cl-cwd), and [with-user-abort](https://github.com/theZacAttacks/with-user-abort) into your local projects
+clone this repo and [cl-cwd](https://github.com/inaimathi/cl-cwd) into your local projects
 
 ```
 mkdir ~/common-lisp
-git clone https://github.com/theZacAttacks/with-user-abort
 git clone https://github.com/inaimathi/cl-cwd
-git clone https://github.com/theZacAttacks/emoji-thief
+git clone https://github.com/compufox/emoji-thief
 ```
 
 run `make` in the `~/common-lisp/emoji-thief` folder.
