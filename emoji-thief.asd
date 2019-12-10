@@ -7,7 +7,6 @@
   :version "1.0"
   :serial t
   :depends-on (#:dexador
-	       #:cl-cwd
 	       #:str
 	       #:cl-json
 	       #:unix-opts

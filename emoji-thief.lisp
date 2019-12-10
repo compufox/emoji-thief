@@ -39,6 +39,19 @@
   "getf but for assoc lists"
   (cdr (assoc indicator place :test #'equalp)))
 
+(defmacro with-cwd ((dir &keys if-does-not-exist) &body body)
+  "executes BODY in the context of directory DIR
+
+if IF-DOES-NOT-EXIST is :create, the the directory will be created, otherwise an error will be thrown"
+  `(progn
+     (unless (directory-exists-p ,dir)
+       ,(cond
+	  ((eql if-does-not-exist :create) `(ensure-directories-exist ,dir))
+	  (t `(error ,(format nil "directory ~a does not exist~%" dir)))))
+     (call-with-current-directory ,dir
+				  (lambda ()
+				    ,@body))))
+     
 
 (defun get-emoji-list (instance)
   "downloads the list of custom emoji for INSTANCE"
@@ -90,12 +103,10 @@
   "downloads all emojis from INSTANCE"
   (let ((list (get-emoji-list instance))
 	(dir (merge-pathnames (or *out-dir* (concatenate 'string instance "/")))))
-    
-    ;; creates our output directory
-    (ensure-directories-exist dir)
 
     ;; goes into the new folder and starts downloading emojis
-    (with-cwd dir
+    ;;  creating the folder if it does not exist
+    (with-cwd (dir :if-directory-does-not-exist :create)
       
       ;; download the initial list
       (download-list list)
