@@ -9,7 +9,7 @@ Download a binary from the releases page
 
 or
 
-clone this repo and [cl-cwd](https://github.com/inaimathi/cl-cwd) into your local projects
+clone this repo into your local projects
 
 ```
 mkdir ~/common-lisp
