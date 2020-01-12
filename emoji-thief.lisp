@@ -39,7 +39,7 @@
   "getf but for assoc lists"
   (cdr (assoc indicator place :test #'equalp)))
 
-(defmacro with-cwd ((dir &keys if-does-not-exist) &body body)
+(defmacro with-cwd ((dir &key if-does-not-exist) &body body)
   "executes BODY in the context of directory DIR
 
 if IF-DOES-NOT-EXIST is :create, the the directory will be created, otherwise an error will be thrown"
