@@ -106,7 +106,7 @@ if IF-DOES-NOT-EXIST is :create, the the directory will be created, otherwise an
 
     ;; goes into the new folder and starts downloading emojis
     ;;  creating the folder if it does not exist
-    (with-cwd (dir :if-directory-does-not-exist :create)
+    (with-cwd (dir :if-does-not-exist :create)
       
       ;; download the initial list
       (download-list list)
